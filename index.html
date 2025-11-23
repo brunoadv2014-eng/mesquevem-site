@@ -1,356 +1,143 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>MQV — MVP Preview</title>
-<style>
-:root{--bg:#f6f9fc;--card:#ffffff;--brand:#082e66;--cta:#0b7bfd;--muted:#6b7280;--danger:#e84b4b;}
-*{box-sizing:border-box}
-body{font-family:Inter, Arial, sans-serif; margin:0; background:var(--bg); color:#0b2540;}
-.container{max-width:1100px;margin:0 auto;padding:20px;}
-.header{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(11,30,60,0.06)}
-.logo{height:56px}
-h1{margin:0;font-size:20px;color:var(--brand)}
-.grid{display:grid;grid-template-columns:1fr 360px;gap:20px;margin-top:18px;}
-.card{background:var(--card);padding:16px;border-radius:10px;box-shadow:0 8px 30px rgba(8,20,40,0.06)}
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
-.btn{background:var(--cta);color:white;padding:10px 12px;border-radius:8px;text-decoration:none;border:none;cursor:pointer;font-weight:700}
-.small{font-size:13px;color:var(--muted)}
-.calendar{width:100%;display:flex;flex-direction:column;gap:10px}
-.month-select{display:flex;align-items:center;gap:8px;justify-content:space-between}
-.month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.day{padding:10px;border-radius:8px;text-align:center;cursor:pointer;background:#f3f6fb;border:1px solid rgba(11,30,60,0.04)}
-.day.disabled{background:#f1f5f9;color:#9aa3ad;cursor:not-allowed;opacity:0.6}
-.day.full{background:#ffecec;color:var(--danger);border:1px solid rgba(232,75,75,0.12)}
-.legend{display:flex;gap:8px;align-items:center;margin-top:6px}
-.legend .box{width:12px;height:12px;border-radius:3px}
-.right .section{margin-bottom:14px}
-.form-row{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MesQueVem - Plataforma de Serviços</title>
 
-.admin-panel{display:flex;flex-direction:column;gap:8px}
-.table{width:100%;border-collapse:collapse}
-.table th,.table td{padding:8px;border-bottom:1px solid #f2f6fb;font-size:13px}
-.badge{padding:6px 8px;border-radius:6px;background:#eef2ff;color:var(--brand);font-weight:700}
-.input, textarea, select{padding:8px;border-radius:8px;border:1px solid #e6eef8;font-size:14px;width:100%}
+  <!-- Estilo simples e responsivo -->
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+    }
 
-@media(max-width:900px){.grid{grid-template-columns:1fr} .right{order:2}}
-</style>
+    header {
+      background: linear-gradient(90deg, #0cb76b, #0ca8b7);
+      padding: 40px 20px;
+      color: white;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 34px;
+      font-weight: bold;
+    }
+
+    header p {
+      margin-top: 10px;
+      opacity: 0.9;
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 3px 7px rgba(0,0,0,0.1);
+      transition: .3s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      font-size: 20px;
+      color: #333;
+    }
+
+    .card p {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #0cb76b;
+      padding: 10px 16px;
+      border-radius: 6px;
+      color: white;
+      text-decoration: none;
+      transition: .2s;
+    }
+
+    .btn:hover {
+      opacity: 0.8;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      color: #666;
+    }
+  </style>
 </head>
+
 <body>
-<div class="container">
-  <header class="header">
-    <img src="logo.jpeg" class="logo" onerror="this.style.display='none'">
-    <div>
-      <h1>Next Month / MQV — MVP</h1>
-      <div class="small">Site único: cliente + profissional + admin (simulado).</div>
-    </div>
+
+  <!-- HERO -->
+  <header>
+    <h1>MesQueVem</h1>
+    <p>A plataforma onde você reserva, paga pelo orçamento e contrata com segurança.</p>
   </header>
 
-  <div class="grid">
-    <main>
+  <div class="container">
+
+    <h2 style="margin-top: 30px; color: #333;">Profissionais disponíveis</h2>
+
+    <div class="services">
+
       <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <strong>Agende uma visita técnica</strong>
-            <div class="small">Escolha um profissional à direita, selecione data disponível e reserve.</div>
-          </div>
-          <div class="small">Taxa de visita: <strong>R$ <span id="taxa">70</span></strong></div>
-        </div>
-
-        <div style="margin-top:12px" class="controls">
-          <label class="small">Profissional:
-            <select id="proSelect" class="input"></select>
-          </label>
-          <button class="btn" onclick="openBulkPro()">Ver perfil</button>
-          <div style="margin-left:auto" class="small">Lead time mínimo: <strong id="leadTimeText">24h</strong></div>
-        </div>
-
-        <div class="calendar card" id="calendarCard">
-          <div class="month-select">
-            <button class="btn" onclick="prevMonth()">&larr;</button>
-            <div><strong id="monthLabel"></strong></div>
-            <button class="btn" onclick="nextMonth()">&rarr;</button>
-          </div>
-          <div class="month-grid" id="monthGrid"></div>
-          <div class="legend small">
-            <div class="box" style="background:#def7e6"></div> Disponível &nbsp;
-            <div class="box" style="background:#ffeecf"></div> Poucas vagas &nbsp;
-            <div class="box" style="background:#ffecec"></div> Esgotado &nbsp;
-            <div class="box" style="background:#f1f5f9"></div> Mês fechado (ver janelas)
-          </div>
-        </div>
-
-        <div id="bookingModal" class="card" style="margin-top:12px;display:none">
-          <strong id="bookingTitle">Reservar</strong>
-          <div class="small" id="bookingInfo"></div>
-          <div style="margin-top:8px" class="form-row">
-            <label>Nome <input id="clientName" class="input" placeholder="Seu nome"></label>
-            <label>Telefone/WhatsApp <input id="clientPhone" class="input" placeholder="+55 11 9xxxx-xxxx"></label>
-            <label>Observação <textarea id="clientNote" class="input" placeholder="Informações adicionais"></textarea></label>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <button class="btn" onclick="payAndReserve()">Pagar e Reservar (simulado)</button>
-            <button class="btn" style="background:#e6eef8;color:var(--brand)" onclick="closeBooking()">Cancelar</button>
-          </div>
-          <div id="bookingMsg" style="margin-top:8px" class="small"></div>
-        </div>
-
+        <h3>🔧 Manutenção & Serviços Gerais</h3>
+        <p>Encontre profissionais avaliados e disponíveis para a sua necessidade.</p>
+        <a class="btn" href="#">Ver profissionais</a>
       </div>
 
-      <div class="card" style="margin-top:12px">
-        <strong>Minhas Reservas</strong>
-        <div class="small">Lista de reservas feitas (simulação offline)</div>
-        <table class="table" id="bookingsTable" style="margin-top:8px">
-          <thead><tr><th>ID</th><th>Data</th><th>Profissional</th><th>Cliente</th><th>Status</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </main>
-
-    <aside class="right">
-      <div class="card section">
-        <strong>Profissionais</strong>
-        <div class="small">Selecione o profissional para ver disponibilidade e criar exceções (admin simulado).</div>
-        <div style="margin-top:8px" id="proProfile"></div>
+      <div class="card">
+        <h3>🚚 Fretes e Transportes</h3>
+        <p>Agende e pague pelo orçamento de forma prática.</p>
+        <a class="btn" href="#">Ver serviços</a>
       </div>
 
-      <div class="card section">
-        <strong>Painel do Profissional (Admin)</strong>
-        <div class="small">Feche meses, crie exceções e ajuste capacidade.</div>
-        <div style="margin-top:8px" class="admin-panel">
-          <label>Mês (YYYY-MM) <input id="adminMonth" class="input" placeholder="2025-12"></label>
-          <div style="display:flex;gap:8px">
-            <button class="btn" onclick="toggleMonth()">Fechar/Abrir Mês</button>
-            <button class="btn" onclick="addException()">Criar Exceção</button>
-          </div>
-          <label style="margin-top:8px">Exceção (YYYY-MM-DD) <input id="exceptionDate" class="input" placeholder="2025-12-18"></label>
-          <label>Capacidade <input id="exceptionCap" class="input" placeholder="2" value="2"></label>
-          <label>Horário (opcional) <input id="exceptionTime" class="input" placeholder="14:00"></label>
-          <div style="margin-top:8px"><button class="btn" onclick="saveProSettings()">Salvar Configurações</button></div>
-        </div>
+      <div class="card">
+        <h3>🐄 Serviços Agro</h3>
+        <p>Intermediação profissional para negócios do agro.</p>
+        <a class="btn" href="#">Explorar</a>
       </div>
 
-      <div class="card section">
-        <strong>KPIs & Scores</strong>
-        <div class="small">Profissionais e clientes ganham score conforme comportamento.</div>
-        <div style="margin-top:8px">
-          <div class="small">Profissionais ativos: <strong id="kProCount">0</strong></div>
-          <div class="small">Reservas totais: <strong id="kTotalReservations">0</strong></div>
-        </div>
+      <div class="card">
+        <h3>⭐ Profissionais com melhor reputação</h3>
+        <p>Avaliações reais para você contratar com confiança.</p>
+        <a class="btn" href="#">Ver ranking</a>
       </div>
 
-    </aside>
+    </div>
+
   </div>
-</div>
 
-<script>
-// Simple in-memory data model (MVP simulation)
-// You can edit defaults below
-const TAXA = 70.0;
-const COMMISSION = 0.15;
-const LEAD_TIME_HOURS = 24;
-const DEFAULT_CAPACITY = 6;
+  <footer>
+    © 2025 MesQueVem — Todos os direitos reservados.
+  </footer>
 
-// sample professionals
-let professionals = [
-  {id:1, name:"R. Oliveira", capacity: DEFAULT_CAPACITY, monthly_closed: {"2025-11": true, "2025-12": true}, exceptions: {"2025-12-05": {cap:2}, "2025-12-18":{cap:1}}, visits: [], docs:true, score:94},
-  {id:2, name:"M. Pereira", capacity: DEFAULT_CAPACITY, monthly_closed: {}, exceptions: {}, visits: [], docs:true, score:78},
-  {id:3, name:"L. Costa", capacity: DEFAULT_CAPACITY, monthly_closed: {"2025-11": true}, exceptions: {}, visits: [], docs:false, score:62}
-];
-
-let bookings = []; // {id, proId, date, time, clientName, phone, status, paid}
-
-// utility date funcs
-function ymd(d){ return d.toISOString().slice(0,10); }
-function parseYMD(s){ const p=s.split('-'); return new Date(p[0], p[1]-1, p[2]); }
-function formatMonthYear(dateObj){ const m=dateObj.toLocaleString('pt-BR',{month:'long'}); return m + ' ' + dateObj.getFullYear(); }
-
-// current month pointer
-let current = new Date(); current.setDate(1);
-
-// init
-function init(){
-  const sel = document.getElementById('proSelect');
-  professionals.forEach(p=>{
-    const opt = document.createElement('option'); opt.value=p.id; opt.textContent=p.name; sel.appendChild(opt);
-  });
-  sel.value = professionals[0].id;
-  renderProProfile();
-  renderMonth();
-  renderBookings();
-  document.getElementById('taxa').textContent = TAXA;
-  document.getElementById('leadTimeText').textContent = LEAD_TIME_HOURS + 'h';
-  document.getElementById('kProCount').textContent = professionals.length;
-  document.getElementById('kTotalReservations').textContent = bookings.length;
-}
-
-// month navigation
-function prevMonth(){ current.setMonth(current.getMonth()-1); renderMonth(); }
-function nextMonth(){ current.setMonth(current.getMonth()+1); renderMonth(); }
-
-function renderMonth(){
-  const monthLabel = document.getElementById('monthLabel');
-  monthLabel.textContent = formatMonthYear(current);
-  const grid = document.getElementById('monthGrid');
-  grid.innerHTML='';
-  const pro = getSelectedPro();
-  const year = current.getFullYear();
-  const month = current.getMonth()+1;
-  const monthKey = year + '-' + String(month).padStart(2,'0');
-  // determine first weekday and days in month
-  const firstDay = new Date(current.getFullYear(), current.getMonth(),1);
-  const startWeekDay = firstDay.getDay(); // 0=Sun..6=Sat (Note: locale differs)
-  // we'll render Sun..Sat grid but align via placeholders
-  const daysInMonth = new Date(current.getFullYear(), current.getMonth()+1,0).getDate();
-  // render 7 headers
-  const weekDays = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  weekDays.forEach(w=>{ const th = document.createElement('div'); th.className='day'; th.style.background='transparent'; th.style.fontWeight='700'; th.textContent=w; grid.appendChild(th); });
-  // placeholders for first week alignment (we'll use startWeekDay)
-  for(let i=0;i<startWeekDay;i++){ const ph=document.createElement('div'); ph.className='day disabled'; ph.textContent=''; grid.appendChild(ph); }
-  for(let d=1; d<=daysInMonth; d++){
-    const dateStr = year + '-' + String(month).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-    const dayEl = document.createElement('div'); dayEl.className='day'; dayEl.textContent = d;
-    // check availability
-    const today = new Date();
-    const dateObj = new Date(year, current.getMonth(), d);
-    // lead time check
-    const minDate = new Date(); minDate.setHours(minDate.getHours()+LEAD_TIME_HOURS);
-    let available = true;
-    if(dateObj < minDate) available = false;
-    // check monthly closed and exceptions
-    if(pro.monthly_closed && pro.monthly_closed[monthKey]){
-      // month closed; only show exceptions
-      if(pro.exceptions && pro.exceptions[dateStr]){
-        // evaluate capacity
-        const cap = pro.exceptions[dateStr].cap || 1;
-        const booked = bookings.filter(b=>b.proId===pro.id && b.date===dateStr && b.status!=='canceled').length;
-        if(booked>=cap){ dayEl.className='day full'; dayEl.title='Esgotado'; }
-        else { /* available exception */ }
-      } else {
-        dayEl.className='day disabled'; available=false;
-      }
-    } else {
-      // month open: capacity = pro.capacity unless exception overrides
-      let cap = pro.capacity || DEFAULT_CAPACITY;
-      if(pro.exceptions && pro.exceptions[dateStr]) cap = pro.exceptions[dateStr].cap || cap;
-      const booked = bookings.filter(b=>b.proId===pro.id && b.date===dateStr && b.status!=='canceled').length;
-      if(booked>=cap){ dayEl.className='day full'; available=false; }
-      else {
-        // mark few slots if cap-booked small
-        if((cap - booked)<=2){ dayEl.style.background='#fff6e6'; dayEl.title=(cap-booked)+' vagas restantes'; }
-        else { dayEl.style.background='#def7e6'; }
-      }
-    }
-    if(!available){ dayEl.classList.add('disabled'); }
-    // click handler
-    dayEl.onclick = ()=>{ if(!dayEl.classList.contains('disabled')) openBookingModal(dateStr); };
-    grid.appendChild(dayEl);
-  }
-}
-
-function getSelectedPro(){ const id = parseInt(document.getElementById('proSelect').value,10); return professionals.find(p=>p.id===id); }
-
-function renderProProfile(){
-  const pro = getSelectedPro();
-  const el = document.getElementById('proProfile');
-  el.innerHTML = `<div class="small"><strong>${pro.name}</strong></div>
-    <div class="small">Capacity/day: ${pro.capacity} • Docs: ${pro.docs? 'ok':'pend'}</div>
-    <div style="margin-top:8px" class="small">Months closed: ${Object.keys(pro.monthly_closed).filter(k=>pro.monthly_closed[k]).join(', ') || 'Nenhum'}</div>
-    <div style="margin-top:6px" class="small">Exceptions: ${Object.keys(pro.exceptions).length}</div>`;
-}
-
-// Booking modal
-let currentBookingDate = null;
-function openBookingModal(dateStr){
-  currentBookingDate = dateStr;
-  document.getElementById('bookingModal').style.display='block';
-  document.getElementById('bookingTitle').textContent = 'Reservar visita — ' + dateStr;
-  const pro = getSelectedPro();
-  const cap = (pro.exceptions && pro.exceptions[dateStr] && pro.exceptions[dateStr].cap) ? pro.exceptions[dateStr].cap : pro.capacity;
-  const booked = bookings.filter(b=>b.proId===pro.id && b.date===dateStr && b.status!=='canceled').length;
-  const remaining = Math.max(0, cap - booked);
-  document.getElementById('bookingInfo').textContent = 'Vagas restantes: ' + remaining + ' • Taxa de visita: R$ ' + TAXA + ' • Política: cancelamento até 48h grátis.';
-  document.getElementById('bookingMsg').textContent='';
-}
-
-// close booking modal
-function closeBooking(){ document.getElementById('bookingModal').style.display='none'; currentBookingDate=null; }
-
-// simulate payment and reserve
-function payAndReserve(){
-  const name = document.getElementById('clientName').value.trim();
-  const phone = document.getElementById('clientPhone').value.trim();
-  if(!name || !phone) { document.getElementById('bookingMsg').textContent = 'Preencha nome e telefone.'; return; }
-  const pro = getSelectedPro();
-  const dateStr = currentBookingDate;
-  // double-check availability atomically (simulate): recalc cap and booked
-  let cap = (pro.exceptions && pro.exceptions[dateStr] && pro.exceptions[dateStr].cap) ? pro.exceptions[dateStr].cap : pro.capacity;
-  const booked = bookings.filter(b=>b.proId===pro.id && b.date===dateStr && b.status!=='canceled').length;
-  if(booked>=cap){ document.getElementById('bookingMsg').textContent='Desculpe, última vaga acabou antes do pagamento.'; renderMonth(); return; }
-  // create booking with pending->paid simulation
-  const id = 'BK' + String(bookings.length+1).padStart(4,'0');
-  const booking = { id:id, proId:pro.id, date:dateStr, time:null, clientName:name, phone:phone, status:'paid', paidAmount:TAXA };
-  bookings.push(booking);
-  // simulate payment fee and commission
-  const commission = TAXA * COMMISSION;
-  const proReceive = TAXA - commission;
-  // append visit to pro stats
-  pro.visits.push(booking.id);
-  // update KPIs and tables
-  document.getElementById('bookingMsg').textContent = 'Pagamento simulado feito. Reserva confirmada: ' + id;
-  closeBooking();
-  renderMonth(); renderBookings();
-  renderProProfile();
-  document.getElementById('kTotalReservations').textContent = bookings.length;
-  // simulate notifications (console)
-  console.log('Notificar profissional', pro.name, 'sobre reserva', id);
-}
-
-// bookings table render
-function renderBookings(){
-  const tbody = document.querySelector('#bookingsTable tbody'); tbody.innerHTML='';
-  bookings.forEach(b=>{
-    const pro = professionals.find(p=>p.id===b.proId);
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${b.id}</td><td>${b.date}</td><td>${pro.name}</td><td>${b.clientName}</td><td>${b.status}</td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-// admin actions
-function toggleMonth(){
-  const month = document.getElementById('adminMonth').value.trim();
-  if(!month.match(/^\\d{4}-\\d{2}$/)){ alert('Use formato YYYY-MM'); return; }
-  const pro = getSelectedPro();
-  pro.monthly_closed[month] = !pro.monthly_closed[month];
-  alert('Mês ' + month + ' agora: ' + (pro.monthly_closed[month] ? 'Fechado':'Aberto'));
-  renderProProfile(); renderMonth();
-}
-
-function addException(){
-  const date = document.getElementById('exceptionDate').value.trim();
-  const cap = parseInt(document.getElementById('exceptionCap').value,10) || 1;
-  const time = document.getElementById('exceptionTime').value.trim() || null;
-  if(!date.match(/^\\d{4}-\\d{2}-\\d{2}$/)){ alert('Use formato YYYY-MM-DD'); return; }
-  const pro = getSelectedPro();
-  pro.exceptions[date] = { cap:cap, time: time };
-  alert('Exceção criada para ' + date + ' (cap=' + cap + ')');
-  renderProProfile(); renderMonth();
-}
-
-// save settings (capacity)
-function saveProSettings(){
-  const pro = getSelectedPro();
-  const cap = parseInt(document.getElementById('exceptionCap').value,10) || pro.capacity;
-  pro.capacity = cap;
-  alert('Capacidade atualizada para ' + cap + ' por dia.');
-  renderProProfile(); renderMonth();
-}
-
-// init
-init();
-
-</script>
 </body>
 </html>
