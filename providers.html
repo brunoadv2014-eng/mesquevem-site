@@ -3,78 +3,213 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>MQV — Profissionais</title>
+  <title>MQV — Perfil do Prestador</title>
   <style>
-    body{font-family:Inter,Arial,Helvetica,sans-serif; margin:0; background:#f6f8fb; color:#0e2340;}
-    .container{max-width:1100px;margin:36px auto;padding:20px;}
+    body{font-family:Inter,Arial,Helvetica,sans-serif;margin:0;background:#f6f8fb;color:#0e2340}
+    .container{max-width:880px;margin:36px auto;padding:20px}
     a.back{display:inline-block;margin-bottom:18px;color:#0a74ff;text-decoration:none;}
-    h1{margin:0 0 12px 0;font-size:28px;}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:18px;}
-    .card{background:#fff;padding:16px;border-radius:8px;box-shadow:0 6px 18px rgba(18,33,54,0.06)}
-    .card h3{margin:0 0 8px 0;font-size:18px}
-    .card p{margin:0 0 12px;color:#666;font-size:14px}
-    .btn{display:inline-block;background:#0cb76b;padding:8px 12px;color:#fff;border-radius:6px;text-decoration:none}
-    .muted{color:#76808c;font-size:13px;margin-top:8px}
-    .search{margin-top:14px;display:flex;gap:8px}
-    .search input{flex:1;padding:10px;border-radius:8px;border:1px solid #e3e8ef}
+    .card{background:#fff;padding:18px;border-radius:8px;box-shadow:0 6px 18px rgba(18,33,54,0.06)}
+    h1{margin:0 0 6px 0}
+    .meta{color:#76808c;margin-bottom:12px}
+    .btn{display:inline-block;background:#0cb76b;padding:10px 14px;color:#fff;border-radius:6px;text-decoration:none;cursor:pointer;border:none}
+    .muted{color:#76808c;font-size:13px;margin-top:10px}
+    .section{margin-top:14px}
+    label{display:block;margin-top:8px;font-size:14px}
+    input[type=date], input[type=time], select, input[type=text]{padding:10px;border-radius:6px;border:1px solid #e6eef7;width:100%;box-sizing:border-box;margin-top:6px}
+    .row{display:flex;gap:12px}
+    .row > *{flex:1}
+    .notice{padding:10px;background:#fff7e6;border-radius:8px;margin-top:12px;color:#8a5a00}
+    .reservations{margin-top:16px}
+    .reservation-item{background:#fff;padding:10px;border-radius:8px;margin-bottom:8px;border-left:4px solid #0a74ff}
   </style>
 </head>
 <body>
   <div class="container">
-    <a class="back" href="index.html">← Voltar</a>
-    <h1>Profissionais disponíveis</h1>
+    <a class="back" href="providers.html">← Voltar</a>
 
-    <div class="search">
-      <input id="q" placeholder="Buscar por nome, serviço ou local" />
-      <button id="btnSearch" class="btn" style="background:#0a74ff">Buscar</button>
+    <div id="content" class="card">
+      <h1 id="name">Carregando...</h1>
+      <div id="meta" class="meta"></div>
+      <p id="bio"></p>
+
+      <div class="section">
+        <strong>Preço para reservar orçamento:</strong> <span id="price">—</span>
+      </div>
+
+      <!-- AGENDAMENTO -->
+      <div class="section" style="margin-top:18px">
+        <h3>Agendar visita / pedido de orçamento</h3>
+
+        <label for="clientName">Seu nome</label>
+        <input id="clientName" type="text" placeholder="Seu nome completo" />
+
+        <div class="row" style="margin-top:6px">
+          <div>
+            <label for="bookDate">Data</label>
+            <input id="bookDate" type="date" />
+          </div>
+          <div>
+            <label for="bookTime">Hora</label>
+            <input id="bookTime" type="time" />
+          </div>
+        </div>
+
+        <label for="note">Observações (opcional)</label>
+        <input id="note" type="text" placeholder="Ex.: preciso que tragam ferramentas X" />
+
+        <div style="margin-top:12px; display:flex; gap:8px">
+          <button id="btnCreate" class="btn">Criar reserva (pago)</button>
+          <button id="btnSimulate" class="btn" style="background:#0a74ff">Criar sem pagar (teste)</button>
+        </div>
+
+        <div id="result" class="muted"></div>
+
+        <div id="payBox" style="display:none" class="notice">
+          Reserva criada com status <strong id="statusLabel">PENDING</strong>.
+          <div style="margin-top:8px">
+            Para confirmar a reserva você precisa pagar a taxa de reserva (R$ <span id="priceForPay">0.00</span>).
+            <div style="margin-top:8px">
+              <button id="btnPayNow" class="btn" style="background:#0a74ff">Pagar agora (simulação)</button>
+              <button id="btnCancelPay" class="btn" style="background:#e14b4b">Cancelar reserva</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section reservations">
+        <h4>Suas reservas (local)</h4>
+        <div id="myReservations"></div>
+      </div>
+
+      <div id="reviews" class="section"></div>
     </div>
-
-    <div id="list" class="grid" aria-live="polite">
-      <!-- cards injetados via JS -->
-    </div>
-
-    <div class="muted">Dados de demonstração — em produção você substituirá pela API.</div>
   </div>
 
   <script>
-    // Dados de demonstração — substitua por fetch('/api/providers') quando tiver API
+    // -- dados mock (mesmo usado no providers.html) --
     const providers = [
       { id: 1, business_name: 'João Serviços', bio: 'Manutenção e fretes', location: 'São Paulo', price: 7000, score: 4.7 },
-      { id: 2, business_name: 'AgroLog', bio: 'Logística e transporte agro', location: 'Ribeirão', price: 8500, score: 4.2 },
+      { id: 2, business_name: 'AgroLog', bio: 'Logística e transporte agro', location: 'Ribeirão Preto', price: 8500, score: 4.2 },
       { id: 3, business_name: 'Casa Verde', bio: 'Consultoria nutricional animal', location: 'Campinas', price: 6000, score: null }
     ];
 
-    function render(list){
-      const wrap = document.getElementById('list');
-      if(!list || list.length===0){ wrap.innerHTML = '<div>Nenhum prestador encontrado.</div>'; return; }
-      wrap.innerHTML = list.map(p => `
-        <article class="card">
-          <h3>${p.business_name}</h3>
-          <p>${p.bio}</p>
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div style="font-size:13px;color:#666">${p.location} · R$ ${(p.price/100).toFixed(2)}</div>
-            <div>
-              <a class="btn" href="provider.html?id=${p.id}">Ver perfil</a>
-            </div>
-          </div>
-          <div class="muted">Avaliação: ${p.score ? p.score + ' ⭐' : 'Sem avaliações'}</div>
-        </article>
+    // leitura do ?id=
+    const params = new URLSearchParams(location.search);
+    const id = Number(params.get("id")) || 1;
+    const p = providers.find(x => x.id === id) || providers[0];
+
+    // preencher a UI
+    document.getElementById("name").innerText = p.business_name;
+    document.getElementById("meta").innerText = p.location + (p.score ? " · " + p.score + " ⭐" : "");
+    document.getElementById("bio").innerText = p.bio;
+    document.getElementById("price").innerText = "R$ " + (p.price/100).toFixed(2);
+    document.getElementById("priceForPay").innerText = (p.price/100).toFixed(2);
+
+    // helpers: storage de reservas
+    const STORAGE_KEY = 'mqv_reservations_v1';
+    function loadReservations(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e){ return []; } }
+    function saveReservations(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+
+    // render minhas reservas
+    function renderMyReservations(){
+      const wrap = document.getElementById('myReservations');
+      const all = loadReservations().filter(r => r.providerId === p.id);
+      if(!all.length){ wrap.innerHTML = '<div class="muted">Nenhuma reserva local.</div>'; return; }
+      wrap.innerHTML = all.map(r => `
+        <div class="reservation-item">
+          <div><strong>${r.clientName}</strong> — ${r.date} ${r.time}</div>
+          <div style="margin-top:6px">Status: <strong>${r.status}</strong></div>
+        </div>
       `).join('');
     }
 
-    render(providers);
+    renderMyReservations();
 
-    document.getElementById('btnSearch').addEventListener('click', ()=>{
-      const q = document.getElementById('q').value.toLowerCase().trim();
-      if(!q) { render(providers); return; }
-      const filtered = providers.filter(p =>
-        (p.business_name || '').toLowerCase().includes(q) ||
-        (p.bio || '').toLowerCase().includes(q) ||
-        (p.location || '').toLowerCase().includes(q)
-      );
-      render(filtered);
+    // criar reserva (com ou sem pagamento)
+    function createReservation({clientName, date, time, note, paid=false}){
+      if(!clientName || !date || !time) return { ok:false, error: 'Preencha nome, data e hora.' };
+      const idRes = 'r-' + Date.now();
+      const booking = {
+        id: idRes,
+        providerId: p.id,
+        clientName,
+        date,
+        time,
+        note,
+        amount_cents: p.price, // taxa de reserva
+        currency: 'BRL',
+        status: paid ? 'paid' : 'pending',
+        created_at: new Date().toISOString()
+      };
+      const arr = loadReservations();
+      arr.push(booking);
+      saveReservations(arr);
+      return { ok:true, booking };
+    }
+
+    // evento criar (simulado pago: cria pending e mostra payBox)
+    document.getElementById('btnCreate').addEventListener('click', ()=> {
+      const clientName = document.getElementById('clientName').value.trim();
+      const date = document.getElementById('bookDate').value;
+      const time = document.getElementById('bookTime').value;
+      const note = document.getElementById('note').value.trim();
+      const res = createReservation({clientName, date, time, note, paid:false});
+      if(!res.ok){ document.getElementById('result').innerText = res.error; return; }
+      document.getElementById('result').innerText = 'Reserva criada (pendente).';
+      document.getElementById('statusLabel').innerText = 'PENDING';
+      document.getElementById('payBox').style.display = 'block';
+      renderMyReservations();
+      // store the last booking id to allow pay/cancel
+      localStorage.setItem('mqv_last_booking', res.booking.id);
     });
+
+    // criar sem pagar (teste)
+    document.getElementById('btnSimulate').addEventListener('click', ()=> {
+      const clientName = document.getElementById('clientName').value.trim() || 'Teste';
+      const date = document.getElementById('bookDate').value || new Date().toISOString().slice(0,10);
+      const time = document.getElementById('bookTime').value || '09:00';
+      const note = document.getElementById('note').value.trim();
+      const res = createReservation({clientName, date, time, note, paid:true});
+      if(!res.ok){ document.getElementById('result').innerText = res.error; return; }
+      document.getElementById('result').innerText = 'Reserva criada e marcada como PAGA (simulação).';
+      document.getElementById('payBox').style.display = 'none';
+      renderMyReservations();
+    });
+
+    // Pagar agora (simulação)
+    document.getElementById('btnPayNow').addEventListener('click', ()=> {
+      const lastId = localStorage.getItem('mqv_last_booking');
+      if(!lastId){ alert('Nenhuma reserva encontrada para pagar.'); return; }
+      const all = loadReservations();
+      const idx = all.findIndex(x => x.id === lastId);
+      if(idx === -1){ alert('Reserva não encontrada.'); return; }
+      all[idx].status = 'paid';
+      saveReservations(all);
+      document.getElementById('statusLabel').innerText = 'PAID';
+      document.getElementById('result').innerText = 'Pagamento simulado — reserva confirmada.';
+      document.getElementById('payBox').style.display = 'none';
+      renderMyReservations();
+    });
+
+    // Cancelar
+    document.getElementById('btnCancelPay').addEventListener('click', ()=> {
+      const lastId = localStorage.getItem('mqv_last_booking');
+      if(!lastId){ alert('Nenhuma reserva encontrada.'); return; }
+      let all = loadReservations();
+      all = all.filter(x => x.id !== lastId);
+      saveReservations(all);
+      document.getElementById('result').innerText = 'Reserva cancelada.';
+      document.getElementById('payBox').style.display = 'none';
+      renderMyReservations();
+    });
+
+    // reviews fakes
+    const reviews = [
+      { client: 'Carlos', rating:5, text:'Ótimo serviço' },
+      { client: 'Ana', rating:4, text:'Bom atendimento' }
+    ];
+    document.getElementById('reviews').innerHTML = '<h3>Avaliações</h3>' + reviews.map(r=>`<div style="margin-top:10px"><strong>${r.client}</strong> — ${r.rating}⭐<div style="color:#555">${r.text}</div></div>`).join('');
   </script>
 </body>
 </html>
-
