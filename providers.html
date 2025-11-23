@@ -87,31 +87,27 @@
   </div>
 
   <script>
-    // -- dados mock (mesmo usado no providers.html) --
+    // dados mock (mesmo do providers.html)
     const providers = [
       { id: 1, business_name: 'João Serviços', bio: 'Manutenção e fretes', location: 'São Paulo', price: 7000, score: 4.7 },
       { id: 2, business_name: 'AgroLog', bio: 'Logística e transporte agro', location: 'Ribeirão Preto', price: 8500, score: 4.2 },
       { id: 3, business_name: 'Casa Verde', bio: 'Consultoria nutricional animal', location: 'Campinas', price: 6000, score: null }
     ];
 
-    // leitura do ?id=
     const params = new URLSearchParams(location.search);
     const id = Number(params.get("id")) || 1;
     const p = providers.find(x => x.id === id) || providers[0];
 
-    // preencher a UI
     document.getElementById("name").innerText = p.business_name;
     document.getElementById("meta").innerText = p.location + (p.score ? " · " + p.score + " ⭐" : "");
     document.getElementById("bio").innerText = p.bio;
     document.getElementById("price").innerText = "R$ " + (p.price/100).toFixed(2);
     document.getElementById("priceForPay").innerText = (p.price/100).toFixed(2);
 
-    // helpers: storage de reservas
     const STORAGE_KEY = 'mqv_reservations_v1';
     function loadReservations(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e){ return []; } }
     function saveReservations(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
 
-    // render minhas reservas
     function renderMyReservations(){
       const wrap = document.getElementById('myReservations');
       const all = loadReservations().filter(r => r.providerId === p.id);
@@ -126,7 +122,6 @@
 
     renderMyReservations();
 
-    // criar reserva (com ou sem pagamento)
     function createReservation({clientName, date, time, note, paid=false}){
       if(!clientName || !date || !time) return { ok:false, error: 'Preencha nome, data e hora.' };
       const idRes = 'r-' + Date.now();
@@ -137,7 +132,7 @@
         date,
         time,
         note,
-        amount_cents: p.price, // taxa de reserva
+        amount_cents: p.price,
         currency: 'BRL',
         status: paid ? 'paid' : 'pending',
         created_at: new Date().toISOString()
@@ -148,7 +143,6 @@
       return { ok:true, booking };
     }
 
-    // evento criar (simulado pago: cria pending e mostra payBox)
     document.getElementById('btnCreate').addEventListener('click', ()=> {
       const clientName = document.getElementById('clientName').value.trim();
       const date = document.getElementById('bookDate').value;
@@ -160,11 +154,9 @@
       document.getElementById('statusLabel').innerText = 'PENDING';
       document.getElementById('payBox').style.display = 'block';
       renderMyReservations();
-      // store the last booking id to allow pay/cancel
       localStorage.setItem('mqv_last_booking', res.booking.id);
     });
 
-    // criar sem pagar (teste)
     document.getElementById('btnSimulate').addEventListener('click', ()=> {
       const clientName = document.getElementById('clientName').value.trim() || 'Teste';
       const date = document.getElementById('bookDate').value || new Date().toISOString().slice(0,10);
@@ -177,7 +169,6 @@
       renderMyReservations();
     });
 
-    // Pagar agora (simulação)
     document.getElementById('btnPayNow').addEventListener('click', ()=> {
       const lastId = localStorage.getItem('mqv_last_booking');
       if(!lastId){ alert('Nenhuma reserva encontrada para pagar.'); return; }
@@ -192,7 +183,6 @@
       renderMyReservations();
     });
 
-    // Cancelar
     document.getElementById('btnCancelPay').addEventListener('click', ()=> {
       const lastId = localStorage.getItem('mqv_last_booking');
       if(!lastId){ alert('Nenhuma reserva encontrada.'); return; }
@@ -204,7 +194,6 @@
       renderMyReservations();
     });
 
-    // reviews fakes
     const reviews = [
       { client: 'Carlos', rating:5, text:'Ótimo serviço' },
       { client: 'Ana', rating:4, text:'Bom atendimento' }
