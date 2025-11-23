@@ -1,1 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MQV — Profissionais</title>
+  <style>
+    body{font-family:Inter,Arial,Helvetica,sans-serif; margin:0; background:#f6f8fb; color:#0e2340;}
+    .container{max-width:1100px;margin:36px auto;padding:20px;}
+    a.back{display:inline-block;margin-bottom:18px;color:#0a74ff;text-decoration:none;}
+    h1{margin:0 0 12px 0;font-size:28px;}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:18px;}
+    .card{background:#fff;padding:16px;border-radius:8px;box-shadow:0 6px 18px rgba(18,33,54,0.06)}
+    .card h3{margin:0 0 8px 0;font-size:18px}
+    .card p{margin:0 0 12px;color:#666;font-size:14px}
+    .btn{display:inline-block;background:#0cb76b;padding:8px 12px;color:#fff;border-radius:6px;text-decoration:none}
+    .muted{color:#76808c;font-size:13px;margin-top:8px}
+    .search{margin-top:14px;display:flex;gap:8px}
+    .search input{flex:1;padding:10px;border-radius:8px;border:1px solid #e3e8ef}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Voltar</a>
+    <h1>Profissionais disponíveis</h1>
+
+    <div class="search">
+      <input id="q" placeholder="Buscar por nome, serviço ou local" />
+      <button id="btnSearch" class="btn" style="background:#0a74ff">Buscar</button>
+    </div>
+
+    <div id="list" class="grid" aria-live="polite">
+      <!-- cards injetados via JS -->
+    </div>
+
+    <div class="muted">Dados de demonstração — em produção você substituirá pela API.</div>
+  </div>
+
+  <script>
+    // Dados de demonstração — substitua por fetch('/api/providers') quando tiver API
+    const providers = [
+      { id: 1, business_name: 'João Serviços', bio: 'Manutenção e fretes', location: 'São Paulo', price: 7000, score: 4.7 },
+      { id: 2, business_name: 'AgroLog', bio: 'Logística e transporte agro', location: 'Ribeirão', price: 8500, score: 4.2 },
+      { id: 3, business_name: 'Casa Verde', bio: 'Consultoria nutricional animal', location: 'Campinas', price: 6000, score: null }
+    ];
+
+    function render(list){
+      const wrap = document.getElementById('list');
+      if(!list || list.length===0){ wrap.innerHTML = '<div>Nenhum prestador encontrado.</div>'; return; }
+      wrap.innerHTML = list.map(p => `
+        <article class="card">
+          <h3>${p.business_name}</h3>
+          <p>${p.bio}</p>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-size:13px;color:#666">${p.location} · R$ ${(p.price/100).toFixed(2)}</div>
+            <div>
+              <a class="btn" href="provider.html?id=${p.id}">Ver perfil</a>
+            </div>
+          </div>
+          <div class="muted">Avaliação: ${p.score ? p.score + ' ⭐' : 'Sem avaliações'}</div>
+        </article>
+      `).join('');
+    }
+
+    render(providers);
+
+    document.getElementById('btnSearch').addEventListener('click', ()=>{
+      const q = document.getElementById('q').value.toLowerCase().trim();
+      if(!q) { render(providers); return; }
+      const filtered = providers.filter(p =>
+        (p.business_name || '').toLowerCase().includes(q) ||
+        (p.bio || '').toLowerCase().includes(q) ||
+        (p.location || '').toLowerCase().includes(q)
+      );
+      render(filtered);
+    });
+  </script>
+</body>
+</html>
 
